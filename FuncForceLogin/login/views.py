@@ -35,3 +35,35 @@ def logoutcheck(request):
     logout(request)
     messages.success(request, 'Logged Out Successfully')
     return redirect('Home')
+ def signup(request):
+    if request.method=='POST':
+        # get post parameters
+
+        User_name = request.POST['Username']
+        Name = request.POST['name']
+        Email = request.POST['email']
+        Pass1 = request.POST['pass1']
+        Pass2 = request.POST['pass2']
+
+        #check erroreouneous input
+        if Pass1 != Pass2:
+            messages.error(request , "Password did not match.")
+            return redirect("Home")
+        if len(User_name) > 25:
+            messages.error(request , "Username should be at most 25 character long")
+            return redirect("Home")
+
+
+
+        #write in database
+        #Create User
+        myuser=User.objects.create_user(User_name,Email,Pass1)
+        myuser.first_name = Name
+        myuser.save()
+        messages.success(request, "Sign up Successful.")
+        # messages.success(request,"Sign Up Successful.")
+        return redirect("Home")
+
+    else:
+        return HttpResponse('<h1>404 - Page Not Found<h1>')
+    
